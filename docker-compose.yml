@@ -1,0 +1,9 @@
+﻿services:
+  gateway:
+    build: .
+    container_name: gateway
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=DockerCompose
+    ports:
+      - 5003:80
