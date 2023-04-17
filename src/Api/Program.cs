@@ -1,21 +1,16 @@
 using Api.Extensions;
 using Api.Middlewares;
+using Api.Properties;
 using ExceptionCatcherMiddleware.Extensions;
-using Infrastructure.HttpHeaderEnricher;
-using Infrastructure.HttpMappers;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IServiceCollection services = builder.Services;
+ParametersProvider parametersProvider = new(builder.Configuration);
 
+services.AddSingleton(parametersProvider.GetLinkProvider());
 services.AddConfiguredExceptionCatcherMiddlewareServices();
-
-services.AddScoped<HttpClient>();
-services.AddScoped<HttpMessageInvoker, HttpClient>();
-services.AddScoped<HttpForwarder>();
-services.AddScoped<IHttpHeaderEnricher, CustomHttpHeaderEnricher>();
+services.AddForwarder();
 services.AddScoped<RequestBodyEnableBuffering>();
-services.AddScoped<HttpRequestMapper>();
-services.AddScoped<HttpResponseMapper>();
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();

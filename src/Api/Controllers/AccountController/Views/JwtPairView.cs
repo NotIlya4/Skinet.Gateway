@@ -1,4 +1,4 @@
-﻿namespace Api.AccountController.Views;
+﻿namespace Api.Controllers.AccountController.Views;
 
 public class JwtPairView
 {
