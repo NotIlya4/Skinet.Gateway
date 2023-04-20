@@ -1,4 +1,5 @@
-﻿using Infrastructure;
+﻿using Infrastructure.AccountService.Helpers;
+using Infrastructure.ProductService;
 
 namespace Api.Properties;
 
@@ -11,15 +12,38 @@ public class ParametersProvider
         _config = config;
     }
 
-    public LinkProvider GetLinkProvider()
+    public AccountServiceUrlProvider GetAccountServiceUrlProvider()
     {
-        return new LinkProvider(GetRequiredValue<string>("Links:AccountService"),
-            GetRequiredValue<string>("Links:ProductService"));
+        var section = _config.GetSection("AccountServiceUrls");
+        return new AccountServiceUrlProvider(
+            baseUrl: GetRequiredValue<string>(section, "BaseUrl"),
+            loginPath: GetRequiredValue<string>(section, "LoginPath"),
+            logoutPath: GetRequiredValue<string>(section, "LogoutPath"),
+            registerPath: GetRequiredValue<string>(section, "RegisterPath"),
+            updateJwtPairPath: GetRequiredValue<string>(section, "UpdateJwtPairPath"),
+            getUserByIdPath: GetRequiredValue<string>(section, "GetUserByIdPath"),
+            getUserByJwtPath: GetRequiredValue<string>(section, "GetUserByJwtPath"));
+    }
+    
+    public ProductServiceUrlProvider GetProductServiceUrlProvider()
+    {
+        var section = _config.GetSection("ProductServiceUrls");
+        return new ProductServiceUrlProvider(
+            baseUrl: GetRequiredValue<string>(section, "BaseUrl"),
+            brandsPath: GetRequiredValue<string>(section, "BrandsPath"),
+            productTypesPath: GetRequiredValue<string>(section, "ProductTypesPath"),
+            productsPath: GetRequiredValue<string>(section, "ProductsPath"),
+            getProductByIdPath: GetRequiredValue<string>(section, "GetProductByIdPath"));
     }
     
     public T GetRequiredValue<T>(string key)
     {
-        T? value = _config.GetValue<T>(key);
+        return GetRequiredValue<T>(_config, key);
+    }
+    
+    public T GetRequiredValue<T>(IConfiguration config, string key)
+    {
+        T? value = config.GetValue<T>(key);
         if (value is null)
         {
             throw new InvalidOperationException(key);
