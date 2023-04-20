@@ -1,7 +1,8 @@
 ﻿using Api.Controllers.ProductController.View;
-using Infrastructure;
 using Infrastructure.HttpMappers;
+using Infrastructure.ProductService;
 using Microsoft.AspNetCore.Mvc;
+using ActionResult = System.Web.Mvc.ActionResult;
 
 namespace Api.Controllers.ProductController;
 
@@ -9,44 +10,46 @@ namespace Api.Controllers.ProductController;
 [Route("products")]
 public class ProductController : ControllerBase
 {
-    private readonly HttpForwarder _forwarder;
-    private readonly string _baseUrl;
+    private readonly IProductService _productService;
+    private readonly ProductControllerViewMapper _mapper;
 
-    public ProductController(HttpForwarder forwarder, LinkProvider linkProvider)
+    public ProductController(IProductService productService, ProductControllerViewMapper mapper)
     {
-        _forwarder = forwarder;
-        _baseUrl = linkProvider.ProductService;
+        _productService = productService;
+        _mapper = mapper;
     }
 
     [HttpGet]
     [Route("brands")]
-    public async Task GetBrand()
+    public async Task<ActionResult<List<string>>> GetBrands()
     {
-        await Forward();
+        List<string> brands = await _productService.GetBrands();
+        return Ok(brands);
     }
     
     [HttpGet]
     [Route("product-types")]
-    public async Task GetProductTypes()
+    public async Task<ActionResult<List<string>>> GetProductTypes()
     {
-        await Forward();
+        List<string> productTypes = await _productService.GetProductTypes();
+        return Ok(productTypes);
     }
 
     [HttpGet]
-    public async Task GetProducts([FromQuery] GetProductsRequestView getProductsRequestView)
+    public async Task<ActionResult<GetProductsResponseView>> GetProducts([FromQuery] ProductFilteringAndSortingView productFilteringAndSortingView)
     {
-        await Forward();
+        GetProductsResponse getProductsResponse =
+            await _productService.GetProducts(_mapper.MapProductFilteringAndSorting(productFilteringAndSortingView));
+        GetProductsResponseView view = _mapper.MapGetProductsResponse(getProductsResponse);
+        return Ok(view);
     }
 
     [HttpGet]
     [Route("id/{id}")]
-    public async Task GetProductById(string id)
+    public async Task<ActionResult<ProductView>> GetProductById(Guid id)
     {
-        await Forward();
-    }
-
-    private async Task Forward()
-    {
-        await _forwarder.ForwardAndWriteToContext(HttpContext, _baseUrl);
+        Product product = await _productService.GetProduct(id);
+        ProductView view = _mapper.MapProduct(product);
+        return Ok(view);
     }
 }
