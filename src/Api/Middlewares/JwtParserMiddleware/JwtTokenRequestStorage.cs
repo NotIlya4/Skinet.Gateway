@@ -8,12 +8,12 @@ public class JwtTokenRequestStorage
     {
         _httpContext = httpContext;
     }
-    
-    private readonly string KEY = "jwtToken";
+
+    private const string Key = "jwtToken";
 
     public string ReadJwtToken()
     {
-        object? rawToken = _httpContext.Items[KEY];
+        object? rawToken = _httpContext.Items[Key];
         if (rawToken is null)
         {
             throw new InvalidOperationException("There is no token in http context");
@@ -26,6 +26,6 @@ public class JwtTokenRequestStorage
     public void SaveJwtToken(string jwt)
     {
         jwt = jwt.Replace("Bearer ", "");
-        _httpContext.Items[KEY] = jwt;
+        _httpContext.Items[Key] = jwt;
     }
 }

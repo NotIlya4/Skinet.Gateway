@@ -1,15 +1,32 @@
-﻿namespace Api.Middlewares.JwtParserMiddleware;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+
+namespace Api.Middlewares.JwtParserMiddleware;
 
 public class JwtParser : IMiddleware
 {
+    private readonly JwtSecurityTokenHandler _tokenHandler = new();
+    private readonly TokenValidationParameters _validationParameters = new() 
+    {
+        ValidateLifetime = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        SignatureValidator = (token, _) =>
+        {
+            var jwt = new JwtSecurityToken(token);
+            return jwt;
+        },
+    };
+    
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         if (HasAttribute(context))
         {
-            JwtTokenRequestStorage storage = new(context);
-
             string jwtToken = context.Request.Headers["Authorization"].ToString();
-        
+            jwtToken = jwtToken.Replace("Bearer ", "");
+            _tokenHandler.ValidateToken(jwtToken, _validationParameters, out _);
+
+            JwtTokenRequestStorage storage = new(context);
             storage.SaveJwtToken(jwtToken);
         }
 

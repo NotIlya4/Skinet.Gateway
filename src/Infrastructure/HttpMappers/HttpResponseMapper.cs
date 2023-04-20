@@ -13,10 +13,15 @@ public class HttpResponseMapper
         _httpHeaderEnricher = httpHeaderEnricher;
     }
 
-    public async Task Enrich(HttpResponseMessage from, HttpContext to)
+    public async Task CopyAll(HttpResponseMessage from, HttpContext to)
     {
         await SetHeaders(from, to);
         SetStatus(from, to);
+        await SetBody(from, to);
+    }
+
+    public async Task CopyBody(HttpResponseMessage from, HttpContext to)
+    {
         await SetBody(from, to);
     }
 

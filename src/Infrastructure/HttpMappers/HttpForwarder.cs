@@ -19,6 +19,6 @@ public class HttpForwarder
     {
         HttpRequestMessage request = await _httpRequestMapper.Map(context, baseUrl);
         HttpResponseMessage response = await _client.SendAsync(request, new CancellationToken());
-        await _httpResponseMapper.Enrich(response, context);
+        await _httpResponseMapper.CopyAll(response, context);
     }
 }
