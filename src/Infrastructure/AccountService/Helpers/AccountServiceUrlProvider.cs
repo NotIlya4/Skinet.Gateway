@@ -1,22 +1,44 @@
-﻿namespace Infrastructure.AccountService;
+﻿namespace Infrastructure.AccountService.Helpers;
 
 public class AccountServiceUrlProvider
 {
-    public string Base { get; }
-    public string Login { get; }
-    public string Register { get; }
-    public string UpdateJwtPair { get; }
+    public Uri Login { get; }
+    public Uri Logout { get; }
+    public Uri Register { get; }
+    public Uri UpdateJwtPair { get; }
+    private readonly Uri _baseUrl;
+    private readonly string _getUserByIdPath;
+    private readonly string _getUserByJwtPath;
 
-    public string GetUserById(string userId)
+    public Uri MakeGetUserByIdUrl(string userId)
     {
-        return $"{Base}id/{userId}";
+        return new Uri(_baseUrl, _getUserByIdPath.Replace("{id}", userId));
+    }
+    
+    public Uri MakeGetUserByJwtTokenUrl(string jwtToken)
+    {
+        return new Uri(_baseUrl, _getUserByJwtPath.Replace("{jwt}", jwtToken));
     }
 
-    public AccountServiceUrlProvider(string @base, string login, string register, string updateJwtPair)
+    public AccountServiceUrlProvider(string baseUrl, string loginPath, string logoutPath, string registerPath, string updateJwtPairPath, string getUserByIdPath, string getUserByJwtPath)
     {
-        Base = @base;
-        Login = login;
-        Register = register;
-        UpdateJwtPair = updateJwtPair;
+        _baseUrl = new Uri(baseUrl);
+        
+        var uriBuilder = new UriBuilder(baseUrl);
+
+        uriBuilder.Path = loginPath;
+        Login = uriBuilder.Uri;
+
+        uriBuilder.Path = logoutPath;
+        Logout = uriBuilder.Uri;
+
+        uriBuilder.Path = registerPath;
+        Register = uriBuilder.Uri;
+
+        uriBuilder.Path = updateJwtPairPath;
+        UpdateJwtPair = uriBuilder.Uri;
+
+        _getUserByIdPath = getUserByIdPath;
+        _getUserByJwtPath = getUserByJwtPath;
     }
 }

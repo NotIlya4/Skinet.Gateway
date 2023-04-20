@@ -1,6 +1,8 @@
-﻿using Api.Controllers.AccountController.Views;
-using Infrastructure;
-using Infrastructure.HttpMappers;
+﻿using Api.Controllers.AccountController.Helpers;
+using Api.Controllers.AccountController.Views;
+using Api.Middlewares.JwtParserMiddleware;
+using Infrastructure.AccountService;
+using Infrastructure.AccountService.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.AccountController;
@@ -9,52 +11,57 @@ namespace Api.Controllers.AccountController;
 [Route("users")]
 public class AccountController : ControllerBase
 {
-    private readonly HttpForwarder _forwarder;
-    private readonly string _baseUrl;
+    private readonly IAccountService _accountService;
+    private readonly AccountControllerViewMapper _mapper;
 
-    public AccountController(HttpForwarder forwarder, LinkProvider linkProvider)
+    public AccountController(IAccountService accountService, AccountControllerViewMapper mapper)
     {
-        _forwarder = forwarder;
-        _baseUrl = linkProvider.AccountService;
+        _accountService = accountService;
+        _mapper = mapper;
     }
     
     [HttpPost]
     [Route("login")]
-    public async Task Login(RegisterCredentials registerCredentials)
+    public async Task<ActionResult<JwtTokenPairView>> Login(RegisterCredentialsView registerCredentialsView)
     {
-        await Forward();
+        JwtTokenPair jwtTokenPair = await _accountService.Login(_mapper.MapRegisterCredentials(registerCredentialsView));
+        JwtTokenPairView view = _mapper.MapJwtTokenPair(jwtTokenPair);
+        return Ok(view);
     }
 
     [HttpPost]
     [Route("register")]
-    public async Task Register(RegisterCredentials registerCredentials)
+    public async Task<ActionResult<JwtTokenPairView>> Register(RegisterCredentialsView registerCredentialsView)
     {
-        await Forward();
+        JwtTokenPair jwtTokenPair = await _accountService.Register(_mapper.MapRegisterCredentials(registerCredentialsView));
+        JwtTokenPairView view = _mapper.MapJwtTokenPair(jwtTokenPair);
+        return Ok(view);
     }
-    
-    [HttpPost]
-    [Route("logout")]
-    public async Task Logout(RegisterCredentials registerCredentials)
-    {
-        await Forward();
-    }
-    
+
     [HttpPost]
     [Route("updateJwtPair")]
-    public async Task UpdateJwtPair(RefreshTokenIdentifierView refreshTokenIdentifierView)
+    public async Task<ActionResult<JwtTokenPairView>> UpdateJwtPair(JwtTokenPairView jwtTokenPairView)
     {
-        await Forward();
+        JwtTokenPair jwtTokenPair = await _accountService.UpdateJwtPair(_mapper.MapJwtTokenPair(jwtTokenPairView));
+        JwtTokenPairView view = _mapper.MapJwtTokenPair(jwtTokenPair);
+        return Ok(view);
+    }
+
+    [HttpPost]
+    [Route("logout")]
+    public async Task<ActionResult> Logout(JwtTokenPairView jwtTokenPairView)
+    {
+        await _accountService.Logout(_mapper.MapJwtTokenPair(jwtTokenPairView));
+        return NoContent();
     }
 
     [HttpGet]
-    [Route("jwt/{value}")]
-    public async Task GetUser(string value)
+    [ParseJwtHeader]
+    public async Task<ActionResult<UserInfoView>> GetUser()
     {
-        await Forward();
-    }
-
-    private async Task Forward()
-    {
-        await _forwarder.ForwardAndWriteToContext(HttpContext, _baseUrl);
+        var jwtStorage = new JwtTokenRequestStorage(HttpContext);
+        UserInfo userInfo = await _accountService.GetUser(jwtStorage.ReadJwtToken());
+        UserInfoView view = _mapper.MapUserInfo(userInfo);
+        return Ok(view);
     }
 }

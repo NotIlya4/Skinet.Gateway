@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.AccountService;
+﻿namespace Infrastructure.AccountService.Models;
 
 public record RegisterCredentials
 {

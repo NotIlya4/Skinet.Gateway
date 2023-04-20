@@ -2,6 +2,12 @@
 
 public class RefreshTokenIdentifierView
 {
-    public required string UserId { get; init; }
-    public required string RefreshToken { get; init; }
+    public string UserId { get; }
+    public string RefreshToken { get; }
+
+    public RefreshTokenIdentifierView(string userId, string refreshToken)
+    {
+        UserId = userId;
+        RefreshToken = refreshToken;
+    }
 }
