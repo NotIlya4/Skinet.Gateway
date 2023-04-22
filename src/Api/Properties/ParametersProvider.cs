@@ -1,5 +1,5 @@
 ﻿using Infrastructure.AccountService.Helpers;
-using Infrastructure.ProductService;
+using Infrastructure.ProductService.Helpers;
 
 namespace Api.Properties;
 

@@ -1,8 +1,8 @@
-﻿using Api.Controllers.ProductController.View;
-using Infrastructure.HttpMappers;
+﻿using Api.Controllers.ProductController.Helpers;
+using Api.Controllers.ProductController.View;
 using Infrastructure.ProductService;
+using Infrastructure.ProductService.Models;
 using Microsoft.AspNetCore.Mvc;
-using ActionResult = System.Web.Mvc.ActionResult;
 
 namespace Api.Controllers.ProductController;
 

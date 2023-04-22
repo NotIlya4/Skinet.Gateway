@@ -24,7 +24,14 @@ public class JwtParser : IMiddleware
         {
             string jwtToken = context.Request.Headers["Authorization"].ToString();
             jwtToken = jwtToken.Replace("Bearer ", "");
-            _tokenHandler.ValidateToken(jwtToken, _validationParameters, out _);
+            try
+            {
+                _tokenHandler.ValidateToken(jwtToken, _validationParameters, out _);
+            }
+            catch (ArgumentNullException)
+            {
+                throw new JwtTokenNotProvidedException();
+            }
 
             JwtTokenRequestStorage storage = new(context);
             storage.SaveJwtToken(jwtToken);

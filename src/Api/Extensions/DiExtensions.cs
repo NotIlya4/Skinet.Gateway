@@ -1,5 +1,5 @@
 ﻿using Api.Controllers.AccountController.Helpers;
-using Api.Controllers.ProductController;
+using Api.Controllers.ProductController.Helpers;
 using Api.ExceptionMappers;
 using Api.Middlewares.JwtParserMiddleware;
 using ExceptionCatcherMiddleware.Extensions;
@@ -9,6 +9,8 @@ using Infrastructure.Client;
 using Infrastructure.HttpHeaderEnricher;
 using Infrastructure.HttpMappers;
 using Infrastructure.ProductService;
+using Infrastructure.ProductService.Helpers;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Extensions;
 
@@ -19,6 +21,8 @@ public static class DiExtensions
         services.AddExceptionCatcherMiddlewareServices(builder =>
         {
             builder.RegisterExceptionMapper<ServiceBadResponseException, ServiceBadResponseExceptionMapper>();
+            builder.RegisterExceptionMapper<SecurityTokenExpiredException, SecurityTokenExpiredExceptionMapper>();
+            builder.RegisterExceptionMapper<JwtTokenNotProvidedException, JwtTokenNotProvidedExceptionMapper>();
         });
     }
 

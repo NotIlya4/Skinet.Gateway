@@ -1,4 +1,6 @@
 ﻿using Infrastructure.Client;
+using Infrastructure.ProductService.Helpers;
+using Infrastructure.ProductService.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Infrastructure.ProductService;

@@ -6,7 +6,7 @@ COPY src/Api/Api.csproj Api/
 COPY src/Infrastructure/Infrastructure.csproj Infrastructure/
 COPY src/Domain/Domain.csproj Domain/
 WORKDIR /src/Api
-RUN dotnet restore -r linux-x64
+RUN dotnet restore
 
 # Copy rest files
 WORKDIR /src

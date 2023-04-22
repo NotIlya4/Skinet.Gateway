@@ -1,7 +1,7 @@
 ﻿using Api.Controllers.ProductController.View;
-using Infrastructure.ProductService;
+using Infrastructure.ProductService.Models;
 
-namespace Api.Controllers.ProductController;
+namespace Api.Controllers.ProductController.Helpers;
 
 public class ProductControllerViewMapper
 {

@@ -24,9 +24,9 @@ services.AddSwaggerGen();
 WebApplication app = builder.Build();
 
 app.UseExceptionCatcherMiddleware();
+app.UseCors();
 app.UseMiddleware<RequestBodyEnableBuffering>();
 app.UseMiddleware<JwtParser>();
-app.UseCors();
 
 app.UseSwagger();
 app.UseSwaggerUI();

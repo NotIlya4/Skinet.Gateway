@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.ProductService;
+﻿namespace Infrastructure.ProductService.Models;
 
 public class GetProductsResponse
 {
