@@ -22,9 +22,9 @@ public class AccountController : ControllerBase
     
     [HttpPost]
     [Route("login")]
-    public async Task<ActionResult<JwtTokenPairView>> Login(RegisterCredentialsView registerCredentialsView)
+    public async Task<ActionResult<JwtTokenPairView>> Login(LoginCredentialsView loginCredentialsView)
     {
-        JwtTokenPair jwtTokenPair = await _accountService.Login(_mapper.MapRegisterCredentials(registerCredentialsView));
+        JwtTokenPair jwtTokenPair = await _accountService.Login(_mapper.MapLoginCredentials(loginCredentialsView));
         JwtTokenPairView view = _mapper.MapJwtTokenPair(jwtTokenPair);
         return Ok(view);
     }

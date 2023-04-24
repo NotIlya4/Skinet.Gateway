@@ -1,14 +1,12 @@
 ﻿namespace Infrastructure.AccountService.Models;
 
-public class RegisterCredentials
+public class LoginCredentials
 {
-    public string Username { get; }
     public string Email { get; }
     public string Password { get; }
 
-    public RegisterCredentials(string username, string email, string password)
+    public LoginCredentials(string email, string password)
     {
-        Username = username;
         Email = email;
         Password = password;
     }

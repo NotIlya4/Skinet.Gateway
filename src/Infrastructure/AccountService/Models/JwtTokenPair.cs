@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.AccountService.Models;
 
-public record JwtTokenPair
+public class JwtTokenPair
 {
     public string JwtToken { get; }
     public Guid RefreshToken { get; }

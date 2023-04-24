@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.AccountService.Models;
 
-public record Address
+public class Address
 {
     public string Country { get; }
     public string City { get; }

@@ -8,6 +8,14 @@ public class AccountControllerViewMapper
     public RegisterCredentials MapRegisterCredentials(RegisterCredentialsView view)
     {
         return new RegisterCredentials(
+            username: view.Username,
+            email: view.Email,
+            password: view.Password);
+    }
+
+    public LoginCredentials MapLoginCredentials(LoginCredentialsView view)
+    {
+        return new LoginCredentials(
             email: view.Email,
             password: view.Password);
     }
@@ -30,6 +38,7 @@ public class AccountControllerViewMapper
     {
         return new UserInfoView(
             id: userInfo.Id.ToString(),
+            username: userInfo.Username,
             email: userInfo.Email,
             address: userInfo.Address is null ? null : MapAddress(userInfo.Address));
     }

@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.ProductService.Models;
 
-public record Product
+public class Product
 {
     public Guid Id { get; }
     public string Name { get; }

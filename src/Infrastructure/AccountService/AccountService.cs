@@ -15,9 +15,9 @@ public class AccountService : IAccountService
         _urlProvider = urlProvider;
     }
 
-    public async Task<JwtTokenPair> Login(RegisterCredentials registerCredentials)
+    public async Task<JwtTokenPair> Login(LoginCredentials loginCredentials)
     {
-        return await _client.Post<JwtTokenPair>(_urlProvider.Login, registerCredentials);
+        return await _client.Post<JwtTokenPair>(_urlProvider.Login, loginCredentials);
     }
 
     public async Task Logout(JwtTokenPair jwtTokenPair)
