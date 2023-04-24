@@ -9,4 +9,6 @@ public interface IAccountService
     public Task<JwtTokenPair> Register(RegisterCredentials registerCredentials);
     public Task<JwtTokenPair> UpdateJwtPair(JwtTokenPair jwtTokenPair);
     public Task<UserInfo> GetUser(string jwtToken);
+    public Task<bool> IsEmailBusy(string email);
+    public Task<bool> IsUsernameBusy(string username);
 }

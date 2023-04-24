@@ -15,7 +15,9 @@ public class AccountServiceUrlProviderTests
             registerPath: "users/register",
             updateJwtPairPath: "users/updateJwtPair",
             getUserByIdPath: "users/id/{id}",
-            getUserByJwtPath: "users/jwt/{jwt}");
+            getUserByJwtPath: "users/jwt/{jwt}",
+            isEmailBusyPath: "users/email/{email}/busy",
+            isUsernameBusyPath: "users/username/{username}/busy");
     }
 
     [Fact]

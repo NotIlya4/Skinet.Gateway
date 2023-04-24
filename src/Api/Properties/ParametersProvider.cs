@@ -22,7 +22,9 @@ public class ParametersProvider
             registerPath: GetRequiredValue<string>(section, "RegisterPath"),
             updateJwtPairPath: GetRequiredValue<string>(section, "UpdateJwtPairPath"),
             getUserByIdPath: GetRequiredValue<string>(section, "GetUserByIdPath"),
-            getUserByJwtPath: GetRequiredValue<string>(section, "GetUserByJwtPath"));
+            getUserByJwtPath: GetRequiredValue<string>(section, "GetUserByJwtPath"),
+            isEmailBusyPath: GetRequiredValue<string>(section, "IsEmailBusyPath"),
+            isUsernameBusyPath: GetRequiredValue<string>(section, "IsUsernameBusyPath"));
     }
     
     public ProductServiceUrlProvider GetProductServiceUrlProvider()

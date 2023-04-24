@@ -39,4 +39,14 @@ public class AccountService : IAccountService
     {
         return await _client.Get<UserInfo>(_urlProvider.MakeGetUserByJwtTokenUrl(jwtToken));
     }
+
+    public async Task<bool> IsEmailBusy(string email)
+    {
+        return bool.Parse(await _client.GetRaw(_urlProvider.MakeIsEmailBusyUrl(email)));
+    }
+
+    public async Task<bool> IsUsernameBusy(string username)
+    {
+        return bool.Parse(await _client.GetRaw(_urlProvider.MakeIsUsernameBusyUrl(username)));
+    }
 }

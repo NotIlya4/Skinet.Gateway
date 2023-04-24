@@ -64,4 +64,20 @@ public class AccountController : ControllerBase
         UserInfoView view = _mapper.MapUserInfo(userInfo);
         return Ok(view);
     }
+
+    [HttpGet]
+    [Route("email/{email}/busy")]
+    public async Task<ActionResult<bool>> IsEmailBusy(string email)
+    {
+        bool result = await _accountService.IsEmailBusy(email);
+        return Ok(result);
+    }
+    
+    [HttpGet]
+    [Route("username/{username}/busy")]
+    public async Task<ActionResult<bool>> IsUsernameBusy(string username)
+    {
+        bool result = await _accountService.IsUsernameBusy(username);
+        return Ok(result);
+    }
 }
