@@ -1,10 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using Infrastructure.AccountService;
+using Infrastructure.AccountService.Models;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Middlewares.JwtParserMiddleware;
 
-public class JwtParser : IMiddleware
+public class JwtParserMiddleware : IMiddleware
 {
+    private readonly IAccountService _accountService;
     private readonly JwtSecurityTokenHandler _tokenHandler = new();
     private readonly TokenValidationParameters _validationParameters = new() 
     {
@@ -17,27 +20,35 @@ public class JwtParser : IMiddleware
             return jwt;
         },
     };
+
+    public JwtParserMiddleware(IAccountService accountService)
+    {
+        _accountService = accountService;
+    }
     
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         if (HasAttribute(context))
         {
-            string jwtToken = context.Request.Headers["Authorization"].ToString();
-            jwtToken = jwtToken.Replace("Bearer ", "");
-            try
-            {
-                _tokenHandler.ValidateToken(jwtToken, _validationParameters, out _);
-            }
-            catch (ArgumentNullException)
-            {
-                throw new JwtTokenNotProvidedException();
-            }
-
-            JwtTokenRequestStorage storage = new(context);
-            storage.SaveJwtToken(jwtToken);
+            await Handle(context);
         }
 
         await next(context);
+    }
+
+    private async Task Handle(HttpContext context)
+    {
+        string jwtToken = context.Request.Headers["Authorization"].ToString();
+        if (string.IsNullOrWhiteSpace(jwtToken))
+        {
+            throw new JwtTokenNotProvidedException();
+        }
+        
+        jwtToken = jwtToken.Replace("Bearer ", "");
+        UserInfo userInfo = await _accountService.GetUser(jwtToken);
+
+        UserInfoProvider storage = new(context);
+        storage.SaveUserInfo(userInfo);
     }
 
     private bool HasAttribute(HttpContext context)

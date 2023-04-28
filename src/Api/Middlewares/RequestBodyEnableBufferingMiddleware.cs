@@ -1,6 +1,6 @@
 ﻿namespace Api.Middlewares;
 
-public class RequestBodyEnableBuffering : IMiddleware
+public class RequestBodyEnableBufferingMiddleware : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {

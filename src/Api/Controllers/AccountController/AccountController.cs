@@ -59,9 +59,10 @@ public class AccountController : ControllerBase
     [ParseJwtHeader]
     public async Task<ActionResult<UserInfoView>> GetUser()
     {
-        var jwtStorage = new JwtTokenRequestStorage(HttpContext);
-        UserInfo userInfo = await _accountService.GetUser(jwtStorage.ReadJwtToken());
+        var userInfoProvider = new UserInfoProvider(HttpContext);
+        UserInfo userInfo = userInfoProvider.ReadUserInfo();
         UserInfoView view = _mapper.MapUserInfo(userInfo);
+        
         return Ok(view);
     }
 

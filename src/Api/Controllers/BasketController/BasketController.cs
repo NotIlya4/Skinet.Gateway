@@ -13,13 +13,11 @@ namespace Api.Controllers.BasketController;
 public class BasketController : ControllerBase
 {
     private readonly IBasketService _basketService;
-    private readonly IAccountService _accountService;
     private readonly BasketControllerViewMapper _mapper;
 
-    public BasketController(IBasketService basketService, IAccountService accountService, BasketControllerViewMapper mapper)
+    public BasketController(IBasketService basketService, BasketControllerViewMapper mapper)
     {
         _basketService = basketService;
-        _accountService = accountService;
         _mapper = mapper;
     }
 
@@ -27,8 +25,8 @@ public class BasketController : ControllerBase
     [ParseJwtHeader]
     public async Task<ActionResult<List<BasketItemView>>> GetBasket()
     {
-        var jwtStorage = new JwtTokenRequestStorage(HttpContext);
-        UserInfo userInfo = await _accountService.GetUser(jwtStorage.ReadJwtToken());
+        var userInfoProvider = new UserInfoProvider(HttpContext);
+        UserInfo userInfo = userInfoProvider.ReadUserInfo();
         
         var basket = await _basketService.Get(userInfo.Id);
         List<BasketItemView> basketItemViews = _mapper.MapBasketItem(basket.Items);
@@ -39,8 +37,8 @@ public class BasketController : ControllerBase
     [ParseJwtHeader]
     public async Task<ActionResult> Insert([FromBody] List<BasketItemView> basketItemViews)
     {
-        var jwtStorage = new JwtTokenRequestStorage(HttpContext);
-        UserInfo userInfo = await _accountService.GetUser(jwtStorage.ReadJwtToken());
+        var userInfoProvider = new UserInfoProvider(HttpContext);
+        UserInfo userInfo = userInfoProvider.ReadUserInfo();
 
         var basket = new Basket(userInfo.Id, _mapper.MapBasketItem(basketItemViews));
         await _basketService.Insert(basket);

@@ -10,7 +10,7 @@ ParametersProvider parametersProvider = new(builder.Configuration);
 
 services.AddConfiguredExceptionCatcherMiddleware();
 services.AddForwarder();
-services.AddScoped<RequestBodyEnableBuffering>();
+services.AddScoped<RequestBodyEnableBufferingMiddleware>();
 services.AddJwtParserMiddleware();
 services.AddConfiguredCors();
 services.AddServiceHttpClient();
@@ -26,8 +26,8 @@ WebApplication app = builder.Build();
 
 app.UseExceptionCatcherMiddleware();
 app.UseCors();
-app.UseMiddleware<RequestBodyEnableBuffering>();
-app.UseMiddleware<JwtParser>();
+app.UseMiddleware<RequestBodyEnableBufferingMiddleware>();
+app.UseMiddleware<JwtParserMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

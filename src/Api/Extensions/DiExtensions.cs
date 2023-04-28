@@ -52,7 +52,7 @@ public static class DiExtensions
 
     public static void AddJwtParserMiddleware(this IServiceCollection services)
     {
-        services.AddScoped<JwtParser>();
+        services.AddScoped<JwtParserMiddleware>();
     }
 
     public static void AddServiceHttpClient(this IServiceCollection services)
