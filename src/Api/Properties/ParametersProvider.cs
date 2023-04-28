@@ -1,4 +1,5 @@
 ﻿using Infrastructure.AccountService.Helpers;
+using Infrastructure.BasketService;
 using Infrastructure.ProductService.Helpers;
 
 namespace Api.Properties;
@@ -36,6 +37,15 @@ public class ParametersProvider
             productTypesPath: GetRequiredValue<string>(section, "ProductTypesPath"),
             productsPath: GetRequiredValue<string>(section, "ProductsPath"),
             getProductByIdPath: GetRequiredValue<string>(section, "GetProductByIdPath"));
+    }
+
+    public BasketServiceUrlProvider GetBasketServiceUrlProvider()
+    {
+        var section = _config.GetSection("BasketServiceUrls");
+        return new BasketServiceUrlProvider(
+            baseUrl: GetRequiredValue<string>(section, "BaseUrl"),
+            postBasketPath: GetRequiredValue<string>(section, "PostBasketPath"),
+            getBasketUrlPath: GetRequiredValue<string>(section, "GetBasketUrlPath"));
     }
     
     public T GetRequiredValue<T>(string key)

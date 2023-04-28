@@ -16,6 +16,7 @@ services.AddConfiguredCors();
 services.AddServiceHttpClient();
 services.AddAccountService(parametersProvider.GetAccountServiceUrlProvider());
 services.AddProductService(parametersProvider.GetProductServiceUrlProvider());
+services.AddBasketService(parametersProvider.GetBasketServiceUrlProvider());
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();

@@ -1,10 +1,12 @@
 ﻿using Api.Controllers.AccountController.Helpers;
+using Api.Controllers.BasketController;
 using Api.Controllers.ProductController.Helpers;
 using Api.ExceptionMappers;
 using Api.Middlewares.JwtParserMiddleware;
 using ExceptionCatcherMiddleware.Extensions;
 using Infrastructure.AccountService;
 using Infrastructure.AccountService.Helpers;
+using Infrastructure.BasketService;
 using Infrastructure.Client;
 using Infrastructure.HttpHeaderEnricher;
 using Infrastructure.HttpMappers;
@@ -71,5 +73,12 @@ public static class DiExtensions
         services.AddSingleton(urlProvider);
         services.AddScoped<ProductControllerViewMapper>();
         services.AddScoped<IProductService, ProductService>();
+    }
+
+    public static void AddBasketService(this IServiceCollection services, BasketServiceUrlProvider urlProvider)
+    {
+        services.AddSingleton(urlProvider);
+        services.AddScoped<IBasketService, BasketService>();
+        services.AddScoped<BasketControllerViewMapper>();
     }
 }
