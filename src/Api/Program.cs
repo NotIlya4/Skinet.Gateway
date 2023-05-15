@@ -1,36 +1,37 @@
 using Api.Extensions;
 using Api.Middlewares;
-using Api.Middlewares.JwtParserMiddleware;
 using Api.Properties;
 using ExceptionCatcherMiddleware.Extensions;
+using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IServiceCollection services = builder.Services;
-ParametersProvider parametersProvider = new(builder.Configuration);
+ParametersProvider parameters = new(builder.Configuration);
 
 services.AddConfiguredExceptionCatcherMiddleware();
-services.AddForwarder();
-services.AddScoped<RequestBodyEnableBufferingMiddleware>();
-services.AddJwtParserMiddleware();
 services.AddConfiguredCors();
-services.AddServiceHttpClient();
-services.AddAccountService(parametersProvider.GetAccountServiceUrlProvider());
-services.AddProductService(parametersProvider.GetProductServiceUrlProvider());
-services.AddBasketService(parametersProvider.GetBasketServiceUrlProvider());
+services.AddCorrelationId();
+services.AddForwardInfoOptions(parameters);
+services.AddConfiguredSwagger();
+builder.AddSerilog(parameters.Seq);
+services.AddAuther(parameters.AccountServiceUrlProvider);
+services.AddYarp(parameters.Yarp);
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
 
 WebApplication app = builder.Build();
 
+app.UseMiddleware<CorrelationIdGeneratorMiddleware>();
+app.UseSerilogRequestLogging();
 app.UseExceptionCatcherMiddleware();
+app.UseMiddleware<ServiceBadResponseExceptionCatcherMiddleware>();
 app.UseCors();
-app.UseMiddleware<RequestBodyEnableBufferingMiddleware>();
-app.UseMiddleware<JwtParserMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.MapControllers();
+
+app.UseMiddleware<YarpExceptionRethrowerMiddleware>();
+app.MapReverseProxy();
 
 app.Run();

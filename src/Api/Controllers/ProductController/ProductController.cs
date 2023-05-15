@@ -1,55 +1,42 @@
-﻿using Api.Controllers.ProductController.Helpers;
-using Api.Controllers.ProductController.View;
-using Infrastructure.ProductService;
-using Infrastructure.ProductService.Models;
+﻿using Api.Controllers.ProductController.View;
+using Api.Swagger.ProducesAttributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.ProductController;
 
 [ApiController]
 [Route("products")]
+[ProducesInternalException]
 public class ProductController : ControllerBase
 {
-    private readonly IProductService _productService;
-    private readonly ProductControllerViewMapper _mapper;
-
-    public ProductController(IProductService productService, ProductControllerViewMapper mapper)
-    {
-        _productService = productService;
-        _mapper = mapper;
-    }
-
     [HttpGet]
     [Route("brands")]
-    public async Task<ActionResult<List<string>>> GetBrands()
+    [ProducesOk]
+    public Task<ActionResult<List<string>>> GetBrands()
     {
-        List<string> brands = await _productService.GetBrands();
-        return Ok(brands);
+        return Task.FromResult<ActionResult<List<string>>>(NoContent());
     }
     
     [HttpGet]
     [Route("product-types")]
-    public async Task<ActionResult<List<string>>> GetProductTypes()
+    [ProducesOk]
+    public Task<ActionResult<List<string>>> GetProductTypes()
     {
-        List<string> productTypes = await _productService.GetProductTypes();
-        return Ok(productTypes);
+        return Task.FromResult<ActionResult<List<string>>>(NoContent());
     }
 
     [HttpGet]
-    public async Task<ActionResult<GetProductsResponseView>> GetProducts([FromQuery] ProductFilteringAndSortingView productFilteringAndSortingView)
+    [ProducesOk]
+    public Task<ActionResult<GetProductsResponseView>> GetProducts([FromQuery] ProductFilteringAndSortingView productFilteringAndSortingView)
     {
-        GetProductsResponse getProductsResponse =
-            await _productService.GetProducts(_mapper.MapProductFilteringAndSorting(productFilteringAndSortingView));
-        GetProductsResponseView view = _mapper.MapGetProductsResponse(getProductsResponse);
-        return Ok(view);
+        return Task.FromResult<ActionResult<GetProductsResponseView>>(NoContent());
     }
 
     [HttpGet]
     [Route("id/{id}")]
-    public async Task<ActionResult<ProductView>> GetProductById(Guid id)
+    [ProducesOk]
+    public Task<ActionResult<ProductView>> GetProductById(Guid id)
     {
-        Product product = await _productService.GetProduct(id);
-        ProductView view = _mapper.MapProduct(product);
-        return Ok(view);
+        return Task.FromResult<ActionResult<ProductView>>(NoContent());
     }
 }

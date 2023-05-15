@@ -1,5 +1,5 @@
-﻿using Api.Middlewares.JwtParserMiddleware;
-using ExceptionCatcherMiddleware.Mappers.CreatingCustomMappers;
+﻿using ExceptionCatcherMiddleware.Mappers.CreatingCustomMappers;
+using Infrastructure.Auther.Exceptions;
 
 namespace Api.ExceptionMappers;
 

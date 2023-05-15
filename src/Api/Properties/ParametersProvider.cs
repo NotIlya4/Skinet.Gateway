@@ -1,6 +1,8 @@
-﻿using Infrastructure.AccountService.Helpers;
-using Infrastructure.BasketService;
-using Infrastructure.ProductService.Helpers;
+﻿using Api.Extensions;
+using Infrastructure.Auther.Helpers;
+using Infrastructure.Yarp.AccountService;
+using Infrastructure.Yarp.BasketService;
+using Infrastructure.Yarp.ProductService;
 
 namespace Api.Properties;
 
@@ -13,40 +15,21 @@ public class ParametersProvider
         _config = config;
     }
 
-    public AccountServiceUrlProvider GetAccountServiceUrlProvider()
-    {
-        var section = _config.GetSection("AccountServiceUrls");
-        return new AccountServiceUrlProvider(
-            baseUrl: GetRequiredValue<string>(section, "BaseUrl"),
-            loginPath: GetRequiredValue<string>(section, "LoginPath"),
-            logoutPath: GetRequiredValue<string>(section, "LogoutPath"),
-            registerPath: GetRequiredValue<string>(section, "RegisterPath"),
-            updateJwtPairPath: GetRequiredValue<string>(section, "UpdateJwtPairPath"),
-            getUserByIdPath: GetRequiredValue<string>(section, "GetUserByIdPath"),
-            getUserByJwtPath: GetRequiredValue<string>(section, "GetUserByJwtPath"),
-            isEmailBusyPath: GetRequiredValue<string>(section, "IsEmailBusyPath"),
-            isUsernameBusyPath: GetRequiredValue<string>(section, "IsUsernameBusyPath"));
-    }
-    
-    public ProductServiceUrlProvider GetProductServiceUrlProvider()
-    {
-        var section = _config.GetSection("ProductServiceUrls");
-        return new ProductServiceUrlProvider(
-            baseUrl: GetRequiredValue<string>(section, "BaseUrl"),
-            brandsPath: GetRequiredValue<string>(section, "BrandsPath"),
-            productTypesPath: GetRequiredValue<string>(section, "ProductTypesPath"),
-            productsPath: GetRequiredValue<string>(section, "ProductsPath"),
-            getProductByIdPath: GetRequiredValue<string>(section, "GetProductByIdPath"));
-    }
+    public string Seq => GetRequiredValue<string>("SeqUrl");
 
-    public BasketServiceUrlProvider GetBasketServiceUrlProvider()
-    {
-        var section = _config.GetSection("BasketServiceUrls");
-        return new BasketServiceUrlProvider(
-            baseUrl: GetRequiredValue<string>(section, "BaseUrl"),
-            postBasketPath: GetRequiredValue<string>(section, "PostBasketPath"),
-            getBasketUrlPath: GetRequiredValue<string>(section, "GetBasketUrlPath"));
-    }
+    public AccountServiceUrlProvider AccountServiceUrlProvider =>
+        _config.AccountServiceUrlProvider("AccountServiceUrls");
+
+    public ProductServiceForwardInfoOptions ProductServiceForwardInfoOptions =>
+        _config.ProductServiceForwarderOptions("ProductServiceForwardInfo");
+    
+    public BasketServiceForwardInfoOptions BasketServiceForwardInfoOptions =>
+        _config.BasketServiceForwardInfoOptions("BasketServiceForwardInfo");
+    
+    public AccountServiceForwardInfoOptions AccountServiceForwardInfoOptions =>
+        _config.AccountServiceForwardInfoOptions("AccountServiceForwardInfo");
+
+    public IConfiguration Yarp => _config.GetSection("Yarp");
     
     public T GetRequiredValue<T>(string key)
     {

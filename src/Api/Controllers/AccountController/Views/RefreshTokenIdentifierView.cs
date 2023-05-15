@@ -2,10 +2,10 @@
 
 public class RefreshTokenIdentifierView
 {
-    public string UserId { get; }
-    public string RefreshToken { get; }
+    public Guid UserId { get; }
+    public Guid RefreshToken { get; }
 
-    public RefreshTokenIdentifierView(string userId, string refreshToken)
+    public RefreshTokenIdentifierView(Guid userId, Guid refreshToken)
     {
         UserId = userId;
         RefreshToken = refreshToken;

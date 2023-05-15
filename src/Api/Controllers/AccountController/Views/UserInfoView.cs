@@ -1,17 +1,19 @@
-﻿namespace Api.Controllers.AccountController.Views;
+﻿using Api.Swagger.Enrichers.AccountController;
+
+namespace Api.Controllers.AccountController.Views;
 
 public class UserInfoView
 {
-    public string Id { get; }
+    public Guid Id { get; }
+    [Username]
     public string Username { get; }
+    [Email]
     public string Email { get; }
-    public AddressView? Address { get; }
 
-    public UserInfoView(string id, string username, string email, AddressView? address)
+    public UserInfoView(Guid id, string username, string email)
     {
         Id = id;
         Username = username;
         Email = email;
-        Address = address;
     }
 }
