@@ -2,5 +2,5 @@
 
 public interface ISimpleHttpClient
 {
-    public Task<T> Get<T>(Uri url, object? queryParams = null);
+    public Task<T> Get<T>(Uri url);
 }

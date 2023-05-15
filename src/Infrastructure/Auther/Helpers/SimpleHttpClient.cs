@@ -12,9 +12,9 @@ public class SimpleHttpClient : ISimpleHttpClient
         _client = client;
     }
 
-    public async Task<T> Get<T>(Uri url, object? queryParams = null)
+    public async Task<T> Get<T>(Uri url)
     {
-        HttpResponseMessage response = await _client.GetAsync(QueryStringComposer.Compose(url, queryParams));
+        HttpResponseMessage response = await _client.GetAsync(url);
         await EnsureSuccess(response);
         return await ParseResponseBody<T>(response);
     }
@@ -29,7 +29,7 @@ public class SimpleHttpClient : ISimpleHttpClient
     
     private async Task<T> ParseResponseBody<T>(HttpResponseMessage response)
     {
-        return JObject.Parse(await response.Content.ReadAsStringAsync()).ToObject<T>() ??
+        return JToken.Parse(await response.Content.ReadAsStringAsync()).ToObject<T>() ??
                throw new InvalidOperationException("Failed to parse response from account service");
     }
 }
