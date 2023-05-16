@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Auther.Helpers;
+﻿namespace Infrastructure.Auther.JwtTokenProvider;
 
 public interface IJwtTokenProvider
 {

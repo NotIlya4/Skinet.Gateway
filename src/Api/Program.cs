@@ -13,7 +13,7 @@ services.AddConfiguredCors();
 services.AddCorrelationId();
 services.AddForwardInfoOptions(parameters);
 services.AddConfiguredSwagger();
-builder.AddSerilog(parameters.Seq);
+services.AddConfiguredSerilog(builder.Configuration, parameters.Seq);
 services.AddAuther(parameters.AccountServiceUrlProvider);
 services.AddYarp(parameters.Yarp);
 

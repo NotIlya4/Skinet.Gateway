@@ -5,9 +5,9 @@ using Api.Swagger.AuthFilter;
 using ExceptionCatcherMiddleware.Extensions;
 using Infrastructure;
 using Infrastructure.Auther;
-using Infrastructure.Auther.Client;
-using Infrastructure.Auther.Exceptions;
 using Infrastructure.Auther.Helpers;
+using Infrastructure.Auther.JwtTokenProvider;
+using Infrastructure.Auther.SimpleHttpClient;
 using Infrastructure.CorrelationIdSystem.Repository;
 using Infrastructure.CorrelationIdSystem.Serilog;
 using Infrastructure.CorrelationIdSystem.Yarp;
@@ -15,6 +15,7 @@ using Infrastructure.Yarp;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 using SwaggerEnrichers.Extensions;
 
@@ -34,18 +35,9 @@ public static class DiExtensions
 
     public static void AddAuther(this IServiceCollection services, AccountServiceUrlProvider urlProvider)
     {
-        services.AddScoped<HttpClient>();
+        services.AddHttpClient();
         services.AddScoped<ISimpleHttpClient, SimpleHttpClient>();
-        services.AddScoped<IJwtTokenProvider>(_ =>
-        {
-            HttpContext? context = new HttpContextAccessor().HttpContext;
-            if (context is null)
-            {
-                throw new InvalidOperationException("You are trying to resolve JwtTokenProvider out of request");
-            }
-
-            return new JwtTokenProvider(context);
-        });
+        services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
         services.AddSingleton(urlProvider);
         services.AddScoped<IAuther, Auther>();
     }
@@ -74,8 +66,8 @@ public static class DiExtensions
     {
         services.AddScoped<CorrelationIdGeneratorMiddleware>();
         services.AddScoped<CorrelationIdRequestTransformer>();
-        services.AddScoped<ICorrelationIdProvider, CorrelationIdHttpContextRepository>();
-        services.AddScoped<ICorrelationIdSaver, CorrelationIdHttpContextRepository>();
+        services.AddScoped<ICorrelationIdProvider, CorrelationIdRepository>();
+        services.AddScoped<ICorrelationIdSaver, CorrelationIdRepository>();
         services.AddScoped<SerilogCorrelationIdEnricher>();
     }
 
@@ -98,19 +90,21 @@ public static class DiExtensions
         });
     }
 
-    public static void AddSerilog(this WebApplicationBuilder builder, string seqUrl)
+    public static void AddConfiguredSerilog(this IServiceCollection services, IConfiguration config, string seqUrl)
     {
-        builder.Services.AddHttpContextAccessor();
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .Enrich.WithProperty("ServiceName", "Gateway")
-            .Enrich.With(builder.Services.BuildServiceProvider().GetRequiredService<SerilogCorrelationIdEnricher>())
-            .WriteTo.Console()
-            .WriteTo.Seq(seqUrl)
-            .ReadFrom.Configuration(builder.Configuration)
-            .CreateLogger();
-        builder.Host.UseSerilog();
+        services.AddHttpContextAccessor();
+        services.AddSerilog((serilogServices, loggerConfigurator) =>
+        {
+            var correlationIdEnricher = serilogServices.CreateScope().ServiceProvider.GetRequiredService<SerilogCorrelationIdEnricher>();
+            loggerConfigurator
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("ServiceName", "Gateway")
+                .Enrich.With(correlationIdEnricher)
+                .WriteTo.Console()
+                .WriteTo.Seq(seqUrl)
+                .ReadFrom.Configuration(config);
+        });
     }
 
     public static void AddYarp(this IServiceCollection services, IConfiguration yarp)

@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Auther.Models;
 
-public class UserInfo
+public record UserInfo
 {
     public Guid Id { get; }
     public string Username { get; }

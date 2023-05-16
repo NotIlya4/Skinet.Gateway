@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Auther.Exceptions;
+﻿namespace Infrastructure.Auther.JwtTokenProvider;
 
 public class JwtTokenNotProvidedException : Exception
 {

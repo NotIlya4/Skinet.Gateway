@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Infrastructure.Auther.Client;
+using Infrastructure.Auther.SimpleHttpClient;
 
 namespace Api.Middlewares;
 
