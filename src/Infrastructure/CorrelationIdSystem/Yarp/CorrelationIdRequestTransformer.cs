@@ -13,13 +13,13 @@ public class CorrelationIdRequestTransformer : IRequestTransformer
         _provider = provider;
     }
 
-    ValueTask IRequestTransformer.Transform(RequestTransformContext context)
+    public Task Transform(RequestTransformContext context)
     {
         Guid? id = _provider.GetCorrelationId();
         if (id.HasValue)
         {
             context.ProxyRequest.Headers.Add("x-request-id", id.Value.ToString());
         }
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 }

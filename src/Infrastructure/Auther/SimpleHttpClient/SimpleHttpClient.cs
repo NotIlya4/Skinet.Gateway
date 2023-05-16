@@ -1,20 +1,29 @@
-﻿using Newtonsoft.Json.Linq;
-using UriQueryStringComposer;
+﻿using Infrastructure.CorrelationIdSystem.Repository;
+using Newtonsoft.Json.Linq;
 
-namespace Infrastructure.Auther.Client;
+namespace Infrastructure.Auther.SimpleHttpClient;
 
 public class SimpleHttpClient : ISimpleHttpClient
 {
     private readonly HttpClient _client;
+    private readonly ICorrelationIdProvider _provider;
 
-    public SimpleHttpClient(HttpClient client)
+    public SimpleHttpClient(HttpClient client, ICorrelationIdProvider provider)
     {
         _client = client;
+        _provider = provider;
     }
 
     public async Task<T> Get<T>(Uri url)
     {
-        HttpResponseMessage response = await _client.GetAsync(url);
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        Guid? id = _provider.GetCorrelationId();
+        if (id.HasValue)
+        {
+            request.Headers.Add("x-request-id", id.Value.ToString());
+        }
+
+        HttpResponseMessage response = await _client.SendAsync(request);
         await EnsureSuccess(response);
         return await ParseResponseBody<T>(response);
     }

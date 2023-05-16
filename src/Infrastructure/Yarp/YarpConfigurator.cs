@@ -77,7 +77,7 @@ public class YarpConfigurator
         {
             foreach (var provider in providers)
             {
-                context.AddRequestTransform(provider.Transform);
+                context.AddRequestTransform(async context1 => await provider.Transform(context1));
             }
 
             foreach (var transformer in _requestTransformers)
@@ -86,10 +86,8 @@ public class YarpConfigurator
                 {
                     context.AddRequestTransform(async transformContext =>
                     {
-                        var scope = context.Services.CreateScope();
                         await transformer.Value(transformContext,
-                            scope.ServiceProvider.GetRequiredService<IAuther>());
-                        scope.Dispose();
+                            context.Services.CreateScope().ServiceProvider.GetRequiredService<IAuther>());
                     });
                 }
             }

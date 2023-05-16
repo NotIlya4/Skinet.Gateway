@@ -1,7 +1,6 @@
-﻿using Infrastructure.Auther.Exceptions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.Auther.Helpers;
+namespace Infrastructure.Auther.JwtTokenProvider;
 
 public class JwtTokenProvider : IJwtTokenProvider
 {

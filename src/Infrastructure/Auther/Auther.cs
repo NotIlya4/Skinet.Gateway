@@ -1,6 +1,7 @@
-﻿using Infrastructure.Auther.Client;
-using Infrastructure.Auther.Helpers;
+﻿using Infrastructure.Auther.Helpers;
+using Infrastructure.Auther.JwtTokenProvider;
 using Infrastructure.Auther.Models;
+using Infrastructure.Auther.SimpleHttpClient;
 
 namespace Infrastructure.Auther;
 

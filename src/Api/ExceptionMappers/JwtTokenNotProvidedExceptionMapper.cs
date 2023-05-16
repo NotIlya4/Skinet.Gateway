@@ -1,5 +1,5 @@
 ﻿using ExceptionCatcherMiddleware.Mappers.CreatingCustomMappers;
-using Infrastructure.Auther.Exceptions;
+using Infrastructure.Auther.JwtTokenProvider;
 
 namespace Api.ExceptionMappers;
 

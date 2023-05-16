@@ -2,13 +2,19 @@
 
 namespace Infrastructure.CorrelationIdSystem.Repository;
 
-public class CorrelationIdHttpContextRepository : ICorrelationIdProvider, ICorrelationIdSaver
+public class CorrelationIdRepository : ICorrelationIdProvider, ICorrelationIdSaver
 {
-    private const string Key = "GATEWAY_CORRELATIONAL_ID";
+    private readonly IHttpContextAccessor _accessor;
+    public string Key => "GATEWAY_CORRELATION_ID";
+
+    public CorrelationIdRepository(IHttpContextAccessor accessor)
+    {
+        _accessor = accessor;
+    }
 
     public Guid? GetCorrelationId()
     {
-        HttpContext? context = Context();
+        HttpContext? context = _accessor.HttpContext;
         if (context is null)
         {
             return null;
@@ -30,17 +36,12 @@ public class CorrelationIdHttpContextRepository : ICorrelationIdProvider, ICorre
 
     private void Save(Guid newCorrelationId)
     {
-        HttpContext? context = Context();
+        HttpContext? context = _accessor.HttpContext;
         if (context is null)
         {
             return;
         }
 
         context.Items[Key] = newCorrelationId;
-    }
-
-    private HttpContext? Context()
-    {
-        return new HttpContextAccessor().HttpContext;
     }
 }

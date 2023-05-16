@@ -1,11 +1,10 @@
 ﻿using HttpContextMoq;
 using HttpContextMoq.Extensions;
-using Infrastructure.Auther.Exceptions;
 using Infrastructure.Auther.Helpers;
-using Microsoft.AspNetCore.Http;
+using Infrastructure.Auther.JwtTokenProvider;
 using Microsoft.Extensions.Primitives;
 
-namespace UnitTests.Auther;
+namespace UnitTests.Infrastructure.AutherTests;
 
 public class JwtTokenProviderTests
 {

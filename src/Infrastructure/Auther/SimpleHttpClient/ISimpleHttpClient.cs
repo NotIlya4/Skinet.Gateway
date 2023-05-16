@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Auther.Client;
+﻿namespace Infrastructure.Auther.SimpleHttpClient;
 
 public interface ISimpleHttpClient
 {

@@ -1,6 +1,6 @@
 ﻿using Infrastructure.Auther.Helpers;
 
-namespace UnitTests;
+namespace UnitTests.Infrastructure.AutherTests;
 
 public class AccountServiceUrlProviderTests
 {
