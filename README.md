@@ -1,5 +1,5 @@
-﻿# Gateway
-This is a gateway based on YARP for my YetAnotherMarketplace. Its an entrypoint for my frontend app. For swagger docs go `localhost:5003/swagger/index.html`, there you can observe shrink docs for all services, for a full docs go to a docs of a specific service.
+# Gateway
+This is a gateway based on YARP for my YetAnotherMarketplace. Its an entrypoint for my frontend app. For swagger docs go `localhost:5003/swagger/index.html`, there you can observe shrink docs of all services. For a full docs go to a docs of a specific service.
 
 ## Environment Variables
 Gateway contains several environment variables that you can change to control its behavior:
