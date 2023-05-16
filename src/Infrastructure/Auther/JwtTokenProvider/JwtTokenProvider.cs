@@ -4,16 +4,22 @@ namespace Infrastructure.Auther.JwtTokenProvider;
 
 public class JwtTokenProvider : IJwtTokenProvider
 {
-    private readonly HttpContext _context;
+    private readonly IHttpContextAccessor _accessor;
 
-    public JwtTokenProvider(HttpContext context)
+    public JwtTokenProvider(IHttpContextAccessor accessor)
     {
-        _context = context;
+        _accessor = accessor;
     }
 
     public string Read()
     {
-        string jwtToken = _context.Request.Headers["Authorization"].ToString();
+        HttpContext? context = _accessor.HttpContext;
+        if (context is null)
+        {
+            throw new InvalidOperationException("You are trying to access jwt token in non request scope");
+        }
+        
+        string jwtToken = context.Request.Headers["Authorization"].ToString();
         if (string.IsNullOrWhiteSpace(jwtToken))
         {
             throw new JwtTokenNotProvidedException();

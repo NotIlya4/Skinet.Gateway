@@ -37,16 +37,7 @@ public static class DiExtensions
     {
         services.AddHttpClient();
         services.AddScoped<ISimpleHttpClient, SimpleHttpClient>();
-        services.AddScoped<IJwtTokenProvider>(_ =>
-        {
-            HttpContext? context = new HttpContextAccessor().HttpContext;
-            if (context is null)
-            {
-                throw new InvalidOperationException("You are trying to resolve JwtTokenProvider out of request");
-            }
-
-            return new JwtTokenProvider(context);
-        });
+        services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
         services.AddSingleton(urlProvider);
         services.AddScoped<IAuther, Auther>();
     }

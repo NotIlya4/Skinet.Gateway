@@ -2,7 +2,9 @@
 using HttpContextMoq.Extensions;
 using Infrastructure.Auther.Helpers;
 using Infrastructure.Auther.JwtTokenProvider;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using Moq;
 
 namespace UnitTests.Infrastructure.AutherTests;
 
@@ -15,7 +17,9 @@ public class JwtTokenProviderTests
     public JwtTokenProviderTests()
     {
         _httpContextMock = new HttpContextMock();
-        _provider = new JwtTokenProvider(_httpContextMock);
+        var accessor = new Mock<IHttpContextAccessor>();
+        accessor.Setup(a => a.HttpContext).Returns(_httpContextMock);
+        _provider = new JwtTokenProvider(accessor.Object);
     }
     
     [Fact]
