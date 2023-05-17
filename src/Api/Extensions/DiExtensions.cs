@@ -15,7 +15,6 @@ using Infrastructure.Yarp;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Core;
 using Serilog.Events;
 using SwaggerEnrichers.Extensions;
 

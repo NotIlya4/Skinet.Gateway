@@ -1,6 +1,5 @@
 ﻿using HttpContextMoq;
 using HttpContextMoq.Extensions;
-using Infrastructure.Auther.Helpers;
 using Infrastructure.Auther.JwtTokenProvider;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;

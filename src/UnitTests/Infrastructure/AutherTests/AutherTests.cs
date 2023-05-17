@@ -9,7 +9,6 @@ namespace UnitTests.Infrastructure.AutherTests;
 
 public class AutherTests
 {
-    private readonly Mock<IJwtTokenProvider> _jwtTokenProvider;
     private readonly string _jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ik1FR0EgRUFTVEVSIEVHRyEhISIsImlhdCI6MTUxNjIzOTAyMn0.WWNUQstZK-8ieMuwb1Hk3hHgcj_u4iAdEbGn9kyTThM";
     private readonly AccountServiceUrlProvider _url = new(baseUrl: "http://localhost:5000", "users/jwt/{jwt}");
     private readonly Mock<ISimpleHttpClient> _client = new();
@@ -17,9 +16,9 @@ public class AutherTests
     
     public AutherTests()
     {
-        _jwtTokenProvider = new Mock<IJwtTokenProvider>();
-        _jwtTokenProvider.Setup(p => p.Read()).Returns(_jwt);
-        _auther = new Auther(_jwtTokenProvider.Object, _client.Object, _url);
+        var jwtTokenProvider = new Mock<IJwtTokenProvider>();
+        jwtTokenProvider.Setup(p => p.Read()).Returns(_jwt);
+        _auther = new Auther(jwtTokenProvider.Object, _client.Object, _url);
     }
     
     [Fact]

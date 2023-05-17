@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Infrastructure.Auther.Helpers;
 using Infrastructure.Auther.Models;
 using Infrastructure.Auther.SimpleHttpClient;
 using Infrastructure.CorrelationIdSystem.Repository;

@@ -1,5 +1,4 @@
-﻿using HttpContextMoq;
-using Infrastructure.CorrelationIdSystem.Repository;
+﻿using Infrastructure.CorrelationIdSystem.Repository;
 using Microsoft.AspNetCore.Http;
 using Moq;
 
