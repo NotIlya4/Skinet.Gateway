@@ -37,4 +37,9 @@ public class AccountServiceForwardInfo : IForwardInfo
     {
         return Task.CompletedTask;
     }
+
+    public Task TransformResponse(ResponseTransformContext context)
+    {
+        return Task.CompletedTask;
+    }
 }

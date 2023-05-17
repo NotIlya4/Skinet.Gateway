@@ -11,6 +11,7 @@ public class YarpConfigurator
     private readonly List<Type> _forwardInfos = new();
     private readonly List<Type> _requestTransformProviders = new();
     private readonly Dictionary<string, Func<RequestTransformContext, IAuther, ValueTask>> _requestTransformers = new();
+    private readonly Dictionary<string, Func<ResponseTransformContext, ValueTask>> _responseTransformers = new();
 
     public YarpConfigurator(IServiceCollection services)
     {
@@ -50,7 +51,7 @@ public class YarpConfigurator
         ServiceProvider services = _services.BuildServiceProvider();
 
         ApplyForwarderInfo(builder, services);
-        ApplyRequestTransformers(builder, services);
+        ApplyTransformers(builder, services);
     }
 
     private void ApplyForwarderInfo(IReverseProxyBuilder builder, ServiceProvider services)
@@ -62,6 +63,10 @@ public class YarpConfigurator
             {
                 await provider.TransformRequest(context, auther);
             };
+            _responseTransformers[provider.Route.RouteId] = async context =>
+            {
+                await provider.TransformResponse(context);
+            };
         }
         List<RouteConfig> routes = providers.Select(p => p.Route).ToList();
         List<ClusterConfig> clusters = providers.Select(p => p.Cluster).ToList();
@@ -69,12 +74,11 @@ public class YarpConfigurator
         builder.LoadFromMemory(routes, clusters);
     }
 
-    private void ApplyRequestTransformers(IReverseProxyBuilder builder, ServiceProvider services)
+    private void ApplyTransformers(IReverseProxyBuilder builder, ServiceProvider services)
     {
-        List<IRequestTransformer> providers = GetRequiredServices<IRequestTransformer>(services, _requestTransformProviders);
-
         builder.AddTransforms(context =>
         {
+            List<IRequestTransformer> providers = GetRequiredServices<IRequestTransformer>(services, _requestTransformProviders);
             foreach (var provider in providers)
             {
                 context.AddRequestTransform(async context1 => await provider.Transform(context1));
@@ -88,6 +92,17 @@ public class YarpConfigurator
                     {
                         await transformer.Value(transformContext,
                             context.Services.CreateScope().ServiceProvider.GetRequiredService<IAuther>());
+                    });
+                }
+            }
+
+            foreach (var responseTransformer in _responseTransformers)
+            {
+                if (context.Route.RouteId == responseTransformer.Key)
+                {
+                    context.AddResponseTransform(async transformContext =>
+                    {
+                        await responseTransformer.Value(transformContext);
                     });
                 }
             }

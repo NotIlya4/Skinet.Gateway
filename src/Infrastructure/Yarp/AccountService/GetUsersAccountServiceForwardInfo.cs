@@ -39,4 +39,9 @@ public class GetUsersAccountServiceForwardInfo : IForwardInfo
         var userInfo = await auther.GetUserInfo();
         context.Path = new PathString($"/users/id/{userInfo.Id}");
     }
+
+    public Task TransformResponse(ResponseTransformContext context)
+    {
+        return Task.CompletedTask;
+    }
 }

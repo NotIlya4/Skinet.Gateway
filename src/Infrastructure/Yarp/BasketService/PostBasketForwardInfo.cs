@@ -47,4 +47,9 @@ public class PostBasketForwardInfo : IForwardInfo
         };
         context.ProxyRequest.Content = new StringContent(body.ToString(), Encoding.UTF8, "application/json");
     }
+
+    public Task TransformResponse(ResponseTransformContext context)
+    {
+        return Task.CompletedTask;
+    }
 }

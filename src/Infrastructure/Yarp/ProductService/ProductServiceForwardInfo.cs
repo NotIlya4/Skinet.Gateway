@@ -37,4 +37,9 @@ public class ProductServiceForwardInfo : IForwardInfo
     {
         return Task.CompletedTask; 
     }
+
+    public Task TransformResponse(ResponseTransformContext context)
+    {
+        return Task.CompletedTask;
+    }
 }
