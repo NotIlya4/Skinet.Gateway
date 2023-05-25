@@ -33,7 +33,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: notilya4/gateway
+          images: notilya4/yet-another-marketplace.gateway
           tags: |
             type=sha
             type=semver,pattern={{version}}
